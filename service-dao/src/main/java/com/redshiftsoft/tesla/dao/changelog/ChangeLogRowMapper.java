@@ -24,7 +24,8 @@ public class ChangeLogRowMapper implements RowMapper<ChangeLog> {
             "join site      s on cl.site_id   = s.site_id " +
             "join address   a on s.address_id = a.address_id " +
             "join country   c on a.country_id = c.country_id " +
-            "join region    r on r.region_id  = c.region_id ";
+            "join region    r on r.region_id  = c.region_id " +
+            "where s.status != 'ARCHIVED' ";
 
     @Override
     public ChangeLog mapRow(ResultSet rs, int rowNum) throws SQLException {

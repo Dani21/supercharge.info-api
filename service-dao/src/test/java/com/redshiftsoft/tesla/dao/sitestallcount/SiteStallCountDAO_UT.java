@@ -36,7 +36,6 @@ public class SiteStallCountDAO_UT {
     private void insertOpenSites() {
         for (int i = 0; i < 10; i++) {
             Site s = testSiteCreator.randomSite();
-            s.setEnabled(true);
             s.setStatus(SiteStatus.OPEN);
             siteDAO.insert(s);
         }

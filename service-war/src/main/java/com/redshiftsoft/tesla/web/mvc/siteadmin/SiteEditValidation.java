@@ -45,6 +45,9 @@ public class SiteEditValidation {
             errorMessages.add("invalid site id = " + modifiedSite.getId());
         } else {
             modifiedSite.getAddress().setId(existingSite.getAddress().getId());
+            if (modifiedSite.getStatus() == null) {
+                modifiedSite.setStatus(existingSite.getStatus());
+            }
         }
     }
 
@@ -71,10 +74,8 @@ public class SiteEditValidation {
             if (site.getDateOpened() == null) {
                 errorMessages.add("missing open date for OPEN site");
             }
-        } else {
-            if (site.getDateOpened() != null) {
-                errorMessages.add("open date should be null for non-open site");
-            }
+        } else if (site.getDateOpened() != null) {
+            errorMessages.add("open date should be null for non-open site");
         }
 
         //

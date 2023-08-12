@@ -13,6 +13,7 @@ IMAGE_TAG="${IMAGE_NAME}:${IMAGE_VERSION}"
 CONTAINER_NAME="supercharge-api"
 
 SCRIPT_DIR=`dirname $0`;
+NET_NAME="supercharge-net"
 DB_NAME="supercharge-db"
 DB_HOST="$DB_NAME:5432"
 CONN=false
@@ -21,9 +22,9 @@ CONN=false
 # Network setup
 #
 RESP=`docker network ls`
-if [[ $RESP != *supercharge-net* ]]; then
+if [[ $RESP != *$NET_NAME* ]]; then
     CONN=true
-    docker network create supercharge-net
+    docker network create $NET_NAME
 fi
 
 LIST=`docker ps`
@@ -40,7 +41,7 @@ if ! [[ $LIST =~ $DB_NAME($'\n'|$) ]]; then
 fi
 
 if [ "$CONN" = true ]; then
-    docker network connect supercharge-net $DB_NAME
+    docker network connect $NET_NAME $DB_NAME
 fi
 
 
@@ -50,7 +51,7 @@ fi
 docker build --tag $IMAGE_TAG "$SCRIPT_DIR/"
 
 if [[ $LIST =~ $CONTAINER_NAME($'\n'|$) ]]; then
-    docker network disconnect supercharge-net supercharge-api 2> /dev/null
+    docker network disconnect $NET_NAME $CONTAINER_NAME 2> /dev/null
     docker stop $CONTAINER_NAME
 fi
 
@@ -60,7 +61,9 @@ fi
 docker run --name $CONTAINER_NAME \
            --detach \
            --env "JAVA_OPTS=-Ddb.url=jdbc:postgresql://$DB_HOST/postgres -Dspring.profiles.active=development" \
+           --env "JPDA_ADDRESS=*:8000" \
            --rm \
-           --network supercharge-net \
+           --network $NET_NAME \
            --publish 8080:8080 \
+           --publish 127.0.0.1:8000:8000 \
            "$IMAGE_TAG"

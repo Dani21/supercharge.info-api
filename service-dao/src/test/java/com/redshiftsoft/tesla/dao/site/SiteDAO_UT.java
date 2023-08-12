@@ -160,30 +160,10 @@ public class SiteDAO_UT {
     }
 
     @Test
-    public void getEnabledSites() {
-        // given
-        List<Integer> enabledSiteIds = IntStream.range(0, 10).mapToObj((x) -> {
-            Site siteIn = testSiteCreator.randomSite();
-            siteIn.setEnabled(true);
-            siteDAO.insert(siteIn);
-            return siteIn.getId();
-        }).collect(Collectors.toList());
-
-
-        // when
-        List<Site> enabledSitesOut = siteDAO.getEnabledSites();
-
-        // then
-        assertTrue(enabledSitesOut.size() >= 10);
-        enabledSitesOut.stream().map(Site::getId).collect(Collectors.toList()).containsAll(enabledSiteIds);
-    }
-
-    @Test
     public void getAllSites() {
         // given
         List<Integer> siteIds = IntStream.range(0, 10).mapToObj((x) -> {
             Site siteIn = testSiteCreator.randomSite();
-            siteIn.setEnabled(RandomUtils.fast().getBoolean());
             siteDAO.insert(siteIn);
             return siteIn.getId();
         }).collect(Collectors.toList());
@@ -214,7 +194,6 @@ public class SiteDAO_UT {
         assertTrue(diffMillis < 30_000);
 
         assertEquals(siteIn.getHours(), siteOut.getHours());
-        assertEquals(siteIn.isEnabled(), siteOut.isEnabled());
         assertEquals(siteIn.isCounted(), siteOut.isCounted());
         assertEquals(siteIn.getGps(), siteOut.getGps());
         assertEquals(siteIn.getElevationMeters(), siteOut.getElevationMeters());

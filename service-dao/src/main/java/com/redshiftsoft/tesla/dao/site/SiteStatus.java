@@ -2,11 +2,16 @@ package com.redshiftsoft.tesla.dao.site;
 
 public enum SiteStatus {
 
+    ARCHIVED,
     CLOSED_PERM,
     CLOSED_TEMP,
     PERMIT,
     CONSTRUCTION,
     OPEN;
+
+    public boolean isArchived() {
+        return ARCHIVED == this;
+    }
 
     public boolean isClosedTemp() {
         return CLOSED_TEMP == this;

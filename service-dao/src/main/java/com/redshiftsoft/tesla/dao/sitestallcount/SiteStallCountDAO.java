@@ -11,7 +11,7 @@ import java.util.List;
 public class SiteStallCountDAO extends BaseDAO {
 
     public int getCurrentStallCount() {
-        String SQL = "select sum(stall_count) from site where enabled=true and status='OPEN'";
+        String SQL = "select sum(stall_count) from site where status='OPEN'";
         return getJdbcTemplate().queryForObject(SQL, Integer.class);
     }
 

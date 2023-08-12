@@ -19,6 +19,13 @@ public class SiteDiffLogger {
     private SiteChangeDAO siteChangesDAO;
 
     /**
+     * Record the archival of an existing site in the site changes table.
+     */
+    public void recordArchive(User user, Site site) {
+        siteChangesDAO.insert(new SiteChange(site.getId(), user.getId(), site.getVersion()+1, "status", site.getStatus().toString(), "ARCHIVED", Instant.now()));
+    }
+
+    /**
      * Record the creation of a NEW site in the site changes table.
      */
     public void recordNew(User user, Site site) {
@@ -38,7 +45,6 @@ public class SiteDiffLogger {
         diff(builder, "status", oldSite.getStatus(), newSite.getStatus());
         diff(builder, "dateOpened", oldSite.getDateOpened(), newSite.getDateOpened());
         diff(builder, "hours", oldSite.getHours(), newSite.getHours());
-        diff(builder, "enabled", oldSite.isEnabled(), newSite.isEnabled());
         diff(builder, "counted", oldSite.isCounted(), newSite.isCounted());
         diff(builder, "latitude", oldSite.getGps().getLatitude(), newSite.getGps().getLatitude());
         diff(builder, "longitude", oldSite.getGps().getLongitude(), newSite.getGps().getLongitude());

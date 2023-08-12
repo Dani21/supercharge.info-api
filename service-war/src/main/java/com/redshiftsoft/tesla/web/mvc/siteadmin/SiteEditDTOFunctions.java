@@ -50,7 +50,6 @@ public final class SiteEditDTOFunctions {
             siteDTO.setStallCount(site.getStallCount());
             siteDTO.setHours(site.getHours());
             siteDTO.setCounted(site.isCounted());
-            siteDTO.setEnabled(site.isEnabled());
             siteDTO.setElevationMeters(site.getElevationMeters());
             siteDTO.setPowerKiloWatt(site.getPowerKilowatt());
             siteDTO.setSolarCanopy(site.isSolarCanopy());
@@ -83,7 +82,6 @@ public final class SiteEditDTOFunctions {
             site.setStallCount(siteDTO.getStallCount());
             site.setHours(siteDTO.getHours());
             site.setCounted(siteDTO.isCounted());
-            site.setEnabled(siteDTO.isEnabled());
             site.setElevationMeters(siteDTO.getElevationMeters());
             site.setPowerKilowatt(siteDTO.getPowerKiloWatt());
             site.setSolarCanopy(siteDTO.isSolarCanopy());

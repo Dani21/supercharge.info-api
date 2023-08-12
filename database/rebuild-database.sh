@@ -31,6 +31,6 @@ docker rm --force "${CONTAINER_NAME}" > /dev/null 2>&1 || true
 docker run --name "${CONTAINER_NAME}" \
            --detach \
            --restart unless-stopped \
-           --publish 15435:5432 \
+           --publish 127.0.0.1:15435:5432 \
            --env POSTGRES_HOST_AUTH_METHOD=trust \
            "${IMAGE_TAG}"

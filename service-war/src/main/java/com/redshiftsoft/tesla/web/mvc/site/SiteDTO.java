@@ -37,7 +37,6 @@ public class SiteDTO {
     private int stallCount;
     private String hours;
     private boolean counted;
-    private boolean enabled;
     private Integer elevationMeters;
 
     //    /* Power in kW */
@@ -154,16 +153,6 @@ public class SiteDTO {
 
     public void setCounted(boolean counted) {
         this.counted = counted;
-    }
-
-    // Enabled is not part of our web service, only enabled sites are served by the web service.
-    @JsonIgnore
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public String getHours() {

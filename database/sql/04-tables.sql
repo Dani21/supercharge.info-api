@@ -78,7 +78,7 @@ alter sequence address_address_id_seq restart with 2000000;
 -- -----------------------------------------------------------
 -- SITE
 -- -----------------------------------------------------------
-create type site_status_type as enum ('CLOSED_PERM','CLOSED_TEMP', 'PERMIT', 'CONSTRUCTION', 'OPEN');
+create type site_status_type as enum ('ARCHIVED', 'CLOSED_PERM', 'CLOSED_TEMP', 'PERMIT', 'CONSTRUCTION', 'OPEN');
 
 create table site
 (
@@ -88,7 +88,6 @@ create table site
     status           "site_status_type" not null,
     opened_date      timestamptz                    null,
     hours            varchar(100)                   null     default null::character varying,
-    enabled          bool                           not null default true,
     counted          bool                           not null,
     address_id       int4                           not null,
     gps_latitude     float8                         not null,
@@ -137,9 +136,6 @@ create table changelog
     user_id       int              null,
     CONSTRAINT fk_changelog_1 foreign key (site_id) references site (site_id)
         on update cascade
-        on delete cascade,
-    CONSTRAINT fk_changelog_2 foreign key (user_id) references users (user_id)
-        on update cascade
         on delete cascade
 );
 alter sequence changelog_id_seq restart with 100000;
@@ -175,7 +171,8 @@ CREATE TABLE users
 );
 CREATE UNIQUE INDEX users_email_lower_idx ON supercharge.users USING btree (lower((email)::text));
 CREATE UNIQUE INDEX users_username_lower_idx ON supercharge.users USING btree (lower((username)::text));
-
+ALTER TABLE changelog ADD CONSTRAINT fk_changelog_2 foreign key (user_id) references users (user_id)
+    on update cascade on delete cascade;
 
 -- -----------------------------------------------------------
 -- user_role

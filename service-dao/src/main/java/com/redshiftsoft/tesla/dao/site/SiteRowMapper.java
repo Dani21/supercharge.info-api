@@ -16,8 +16,6 @@ public class SiteRowMapper implements RowMapper<Site> {
             "JOIN country ON address.country_id = country.country_id " +
             "JOIN region ON country.region_id = region.region_id";
 
-    public static final String SELECT_ENABLED = SELECT_ALL + " WHERE enabled = TRUE";
-
     @Override
     public Site mapRow(ResultSet rs, int rowNum) throws SQLException {
         Site site = new Site();
@@ -31,7 +29,6 @@ public class SiteRowMapper implements RowMapper<Site> {
 
         site.setDateOpened(LocalDateUtil.toLocalDate(rs.getTimestamp(c++)));
         site.setHours(rs.getString(c++));
-        site.setEnabled(rs.getBoolean(c++));
         site.setCounted(rs.getBoolean(c++));
 
         c++; // address_id

@@ -23,7 +23,6 @@ public class Site {
     private int stallCount;
     private String hours;
     private boolean counted;
-    private boolean enabled;
     private Integer elevationMeters;
     private String developerNotes;
 
@@ -49,7 +48,6 @@ public class Site {
                 ", locationId='" + locationId + '\'' +
                 ", urlDiscuss='" + urlDiscuss + '\'' +
                 ", dateOpened=" + dateOpened +
-                ", enabled=" + enabled +
                 ", stallCount=" + stallCount +
                 ", hours=" + hours +
                 ", count=" + counted +
@@ -173,14 +171,6 @@ public class Site {
 
     public void setCounted(boolean counted) {
         this.counted = counted;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public String getHours() {

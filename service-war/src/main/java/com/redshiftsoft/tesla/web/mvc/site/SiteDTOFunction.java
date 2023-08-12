@@ -22,7 +22,6 @@ public class SiteDTOFunction implements Function<Site, SiteDTO> {
         siteDTO.setStallCount(site.getStallCount());
         siteDTO.setHours(site.getHours());
         siteDTO.setCounted(site.isCounted());
-        siteDTO.setEnabled(site.isEnabled());
         siteDTO.setElevationMeters(site.getElevationMeters());
         siteDTO.setPowerKilowatt(site.getPowerKilowatt());
         siteDTO.setSolarCanopy(site.isSolarCanopy());

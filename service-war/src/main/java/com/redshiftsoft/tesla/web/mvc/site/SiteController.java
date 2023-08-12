@@ -156,6 +156,7 @@ public class SiteController {
             Map<Integer, Integer> statusDays = changeLogDAO.getStatusDaysMap();
 
             List<SiteDTO> dtos = siteDAO.getAllSites().stream()
+                    .filter(site -> !site.getStatus().isArchived())
                     .map(new SiteDTOFunction())
                     .collect(Collectors.toList());
 

@@ -111,9 +111,6 @@ public class SiteEditController {
     private JsonResponse doSaveNewOrEdit(User user, SiteEditDTO newOrModifiedSite) {
         LOG.severe("site name = " + newOrModifiedSite.getName());
 
-        // For now we can only edit sites that are already enabled.
-        newOrModifiedSite.setEnabled(true);
-
         List<String> errorMessages = siteEditValidation.validate(newOrModifiedSite);
         if (errorMessages.isEmpty()) {
             Site site = SiteEditDTOFunctions.transform(newOrModifiedSite);
@@ -131,6 +128,12 @@ public class SiteEditController {
 
         Site oldSite = siteDAO.getById(site.getId());
         SiteStatus oldSiteStatus = oldSite.getStatus();
+
+        if (!oldSiteStatus.isArchived() && site.getStatus().isArchived()) {
+            return new JsonResponse(JsonResponse.Result.FAIL, "Site cannot be edited into an archive state.");
+        } else if (oldSiteStatus.isArchived() && !site.getStatus().isArchived() && !user.hasRole("admin")) {
+            return new JsonResponse(JsonResponse.Result.FAIL, "Only an administrator can edit site out of an archive state.");
+        }
 
         boolean changes = siteDiffLogger.record(user, oldSite, site);
         if (!changes) {
@@ -175,9 +178,23 @@ public class SiteEditController {
     @RequestMapping(method = RequestMethod.POST, value = "/delete")
     @ResponseBody
     @Transactional
-    public void delete(@RequestParam int siteId) {
-        siteDAO.delete(siteId);
-        dbInfoDAO.setLastModifiedToNow();
+    public JsonResponse delete(@RequestParam int siteId) {
+        try {
+            Site site = siteDAO.getById(siteId);
+            if (site.getStatus().isArchived()) {
+                return JsonResponse.fail("Site is already archived; please refresh.");
+            }
+            siteDAO.delete(siteId);
+            siteDiffLogger.recordArchive(Security.user(), site);
+            dbInfoDAO.setLastModifiedToNow();
+            return new SiteEditResponse(siteId, Lists.newArrayList(
+                format("ARCHIVED site '%s'", site.getName())
+            ));
+        } catch (Exception e) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            LOG.log(Level.SEVERE, "", e);
+            return JsonResponse.error(e);
+        }
     }
 
     // - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

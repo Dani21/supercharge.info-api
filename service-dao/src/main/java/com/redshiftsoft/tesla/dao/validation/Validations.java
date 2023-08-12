@@ -62,7 +62,7 @@ public class Validations {
                 new Validation(ADDRESS, "no duplicate street address",
                         "SELECT street, array_agg(site_id) site_ids, count(*) " +
                         "FROM site JOIN address USING (address_id) " +
-                        "WHERE status != 'CLOSED_PERM' " +
+                        "WHERE status not in ('ARCHIVED', 'CLOSED_PERM') " +
                         "GROUP BY street HAVING count(*) > 1")
         );
 
@@ -92,7 +92,7 @@ public class Validations {
                         "SELECT s.* " +
                         "FROM site s " +
                         "LEFT JOIN changelog c on (s.site_id = c.site_id AND c.site_status = s.status) " +
-                        "WHERE c.site_id is null")
+                        "WHERE c.site_id is null and s.status != 'ARCHIVED'")
         );
 
         validationMap.add(

@@ -13,3 +13,4 @@ RUN mkdir webapps/service
 WORKDIR webapps/service
 RUN jar xf ../service.war && rm ../service.war
 RUN sed -i "/^handlers/ s/.*/handlers = org.apache.juli.FileHandler, java.util.logging.ConsoleHandler/" "WEB-INF/classes/logging.properties"
+CMD catalina.sh jpda run

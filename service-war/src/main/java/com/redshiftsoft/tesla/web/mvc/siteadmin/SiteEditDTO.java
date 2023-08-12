@@ -25,7 +25,7 @@ public class SiteEditDTO {
     private int id;
     private String locationId;
     private String name;
-    private SiteStatus status = SiteStatus.OPEN;
+    private SiteStatus status;
     private AddressDTO address = new AddressDTO();
     private SiteGPS gps;
     private String urlDiscuss;
@@ -35,7 +35,6 @@ public class SiteEditDTO {
     private int stallCount;
     private String hours;
     private boolean counted;
-    private boolean enabled;
     private Integer elevationMeters;
     private String developerNotes;
 
@@ -62,7 +61,6 @@ public class SiteEditDTO {
                 ", locationId='" + locationId + '\'' +
                 ", urlDiscuss='" + urlDiscuss + '\'' +
                 ", dateOpened=" + dateOpened +
-                ", enabled=" + enabled +
                 ", stallCount=" + stallCount +
                 ", hours=" + hours +
                 ", count=" + counted +
@@ -186,16 +184,6 @@ public class SiteEditDTO {
 
     public void setCounted(boolean counted) {
         this.counted = counted;
-    }
-
-    // Enabled is not part of our web service, only enabled sites are served by the web service.
-    @JsonIgnore
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
     }
 
     public String getHours() {

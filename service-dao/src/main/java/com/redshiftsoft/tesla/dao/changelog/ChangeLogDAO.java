@@ -19,7 +19,7 @@ public class ChangeLogDAO extends BaseDAO {
 
     private static final ChangeLogRowMapper CHANGE_LOG_ROW_MAPPER = new ChangeLogRowMapper();
     public ChangeLog getById(int id) {
-        String sql = ChangeLogRowMapper.SELECT + " where cl.id=?";
+        String sql = ChangeLogRowMapper.SELECT + " and cl.id=?";
         return getJdbcTemplate().queryForObject(sql, CHANGE_LOG_ROW_MAPPER, id);
     }
 
@@ -33,7 +33,8 @@ public class ChangeLogDAO extends BaseDAO {
     }
 
     public Map<Instant, SiteStatus> getSiteList(int siteId) {
-        String sql = "select change_date, site_status from changelog where site_id = ? order by change_date, id";
+        String sql = "select change_date, site_status from changelog inner join site using (site_id) " +
+            "where status != 'ARCHIVED' and site_id = ? order by change_date, id";
         List<Map<String, Object>> rowList = getJdbcTemplate().queryForList(sql, siteId);
 
         Map<Instant, SiteStatus> resultMap = new HashMap<>();
@@ -46,7 +47,8 @@ public class ChangeLogDAO extends BaseDAO {
     }
 
     public List<ChangeLogEdit> getChangeLogEdits(int siteId) {
-        String sql = "select changelog.*, username from changelog left join users using (user_id) where site_id = ? order by change_date desc, id desc";
+        String sql = "select changelog.*, username from changelog left join users using (user_id) " +
+            "where site_id = ? order by change_date desc, id desc";
         return getJdbcTemplate().query(sql, CHANGE_LOG_EDIT_ROW_MAPPER, siteId);
     }
 
@@ -62,7 +64,7 @@ public class ChangeLogDAO extends BaseDAO {
     }
 
     public boolean exists(Integer changeLogId) {
-        String sql = "select count(*) from changelog where id=?";
+        String sql = "select count(*) from changelog inner join site using (site_id) where status != 'ARCHIVED' and id=?";
         Long count = getJdbcTemplate().queryForObject(sql, Long.class, changeLogId);
         return count != 0;
     }
@@ -80,7 +82,7 @@ public class ChangeLogDAO extends BaseDAO {
                 "       s.status," +
                 "       DATE_PART('day', now() - (select max(change_date) from changelog c where s.site_id = c.site_id)) as status_count " +
                 "from site s " +
-                "where s.status != 'OPEN'::SITE_STATUS_TYPE";
+                "where s.status not in ('OPEN', 'ARCHIVED')";
 
         List<Map<String, Object>> rowList = getJdbcTemplate().queryForList(sql);
         Map<Integer, Integer> resultMap = new HashMap<>();

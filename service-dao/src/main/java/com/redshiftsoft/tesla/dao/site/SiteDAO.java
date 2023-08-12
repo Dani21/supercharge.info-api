@@ -43,10 +43,6 @@ public class SiteDAO extends BaseDAO {
         return siteMap;
     }
 
-    public List<Site> getEnabledSites() {
-        return getJdbcTemplate().query(SiteRowMapper.SELECT_ENABLED, SITE_ROW_MAPPER);
-    }
-
     public void insert(Site site) {
         addressDAO.insert(site.getAddress());
         site.setVersion(1);
@@ -67,12 +63,10 @@ public class SiteDAO extends BaseDAO {
     }
 
     public boolean exists(int siteId) {
-        return getCount("select count(*) from site where site_id=?", siteId) > 0;
+        return getCount("select count(*) from site where status != 'ARCHIVED' and site_id=?", siteId) > 0;
     }
 
     public void delete(int siteId) {
-        Site site = getById(siteId);
-        addressDAO.delete(site.getAddress().getId());
-        getJdbcTemplate().update("DELETE FROM site WHERE site_id=?", siteId);
+        getJdbcTemplate().update("UPDATE site SET status='ARCHIVED',version=version+1,modified_date=now() WHERE site_id=?", siteId);
     }
 }
